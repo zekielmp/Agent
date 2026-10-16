@@ -1,6 +1,9 @@
 package main
 
+import (
+	"github.com/zekielmp/Agent/internal/database"
+)
 
-func main(){
-	
+func main() {
+	database.ConnDB()
 }
