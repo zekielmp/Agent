@@ -2,18 +2,21 @@ package database
 
 import (
 	"database/sql"
-	"os"
+	"time"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func ConnDB() (*sql.DB, error) {
-	dsn := os.Getenv("DB_DSN")
-
+func ConnDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}
 
-	defer db.Close()
+	db.SetConnMaxLifetime(30 * time.Minute)
+	db.SetMaxOpenConns(15)
+	db.SetMaxIdleConns(10)
+	db.SetConnMaxIdleTime(5 * time.Minute)
 
 	err = db.Ping()
 	if err != nil {
