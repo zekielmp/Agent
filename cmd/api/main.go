@@ -1,8 +1,16 @@
 package main
 
-import "log"
+import (
+	"log"
 
-// "github.com/zekielmp/Agent/internal/server"
+	"github.com/joho/godotenv"
+)
+
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("error loading .env file")
+	}
+}
 
 func main() {
 	if err := Server(&Application{}); err != nil {

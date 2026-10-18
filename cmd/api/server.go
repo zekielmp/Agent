@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,17 +13,21 @@ type Application struct {
 }
 
 func Server(app *Application) error {
-	db, err := database.ConnDB(os.Getenv("DB_DSN"))
+	dsn := os.Getenv("DB_DSN")
+	db, err := database.ConnDB(dsn)
 	if err != nil {
-		log.Println("Failed to connect to database:", err)
+		log.Fatalf("Failed to connect to database:%s", err.Error())
+	} else {
+		log.Println("Database connected successfully")
 	}
 
 	defer db.Close()
 
+	port := os.Getenv("PORT")
 	srv := http.Server{
-		Addr:    ":8080",
-		Handler: app.SetupRoutes(),
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: app.routes(),
 	}
-
+	log.Printf("Server runnning on port :%s", port)
 	return srv.ListenAndServe()
 }
