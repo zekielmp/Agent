@@ -7,9 +7,11 @@ import (
 	"os"
 
 	"github.com/zekielmp/Agent/internal/database"
+	"github.com/zekielmp/Agent/internal/handlers"
 )
 
 type Application struct {
+	handler handlers.Handlers
 }
 
 func Server(app *Application) error {

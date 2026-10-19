@@ -21,7 +21,7 @@ func CreateUser(user *models.User) (*dto.AuthResponse, error) {
 	 values ($1, $2, $3, $4, $5)
 	 returning id
 	`
-
+	
 	err := db.QueryRowContext(ctx, query, user.Email, user.Password, user.FirstName, user.LastName, user.Phone).Scan(&user.ID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user:%w", err)
