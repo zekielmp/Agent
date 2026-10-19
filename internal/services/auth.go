@@ -10,7 +10,20 @@ import (
 	"github.com/zekielmp/Agent/internal/models"
 )
 
+// type AuthServices struct {
+// 	db *sql.DB
+// }
+
+// func NewAuthServices(db *sql.DB) *AuthServices {
+// 	return &AuthServices{
+// 		db: db,
+// 	}
+// }
+
 var db *sql.DB
+func InitDB(database *sql.DB) {
+	db = database
+}
 
 func CreateUser(user *models.User) (*dto.AuthResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -18,7 +31,7 @@ func CreateUser(user *models.User) (*dto.AuthResponse, error) {
 
 	query := `insert into users
 	 (email,password,first_name, last_name,phone)
-	 values ($1, $2, $3, $4, $5, $6)
+	 values ($1, $2, $3, $4, $5)
 	 returning id
 	`
 

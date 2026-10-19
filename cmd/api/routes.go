@@ -9,6 +9,7 @@ func (app *Application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", app.healthCheck)
+	mux.HandleFunc("POST /user/signup", app.handlers.SignUp)
 
 	return mux
 }

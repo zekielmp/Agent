@@ -14,7 +14,7 @@ func init() {
 
 func main() {
 	if err := Server(&Application{}); err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
 	}
 
 }
