@@ -20,8 +20,8 @@ type User struct {
 	FirstName string    `json:"first_name" validate:"required"`
 	LastName  string    `json:"last_name" validate:"required"`
 	Phone     string    `json:"phone" validate:"required"`
-	IsActive  bool      `json:"is_active" default:"renter"`
-	Role      UserRole  `json:"role" `
+	IsActive  bool      `json:"is_active" default:"true"`
+	Role      UserRole  `json:"role" default:"renter"`
 	CreatedAt time.Time `json:"created_at" `
 	UpdatedAt time.Time `json:"updated_at" `
 }
