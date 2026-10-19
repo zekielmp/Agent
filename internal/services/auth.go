@@ -3,14 +3,15 @@ package services
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
-	"github.com/zekielmp/Agent/internal/dto"
+	"github.com/zekielmp/Agent/internal/models"
 )
 
 var db *sql.DB
 
-func createUSer(dto *dto.RegisterRequest) (string, error) {
+func CreateUser(user *models.User) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -20,4 +21,12 @@ func createUSer(dto *dto.RegisterRequest) (string, error) {
 	 returning id
 	`
 
+	err := db.QueryRowContext(ctx, query, user.Email, user.Password, user.FirstName, user.LastName, user.Phone).Scan(&user.ID)
+	if err != nil {
+		return "", fmt.Errorf("failed to create user:%w", err)
+	}
+
+	return user.ID, nil
 }
+
+

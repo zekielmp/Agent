@@ -14,7 +14,7 @@ const (
 
 // User represents a user in the system.
 type User struct {
-	ID        uint      `json:"id"`
+	ID        string    `json:"id"`
 	Email     string    `json:"email" validate:"required,email"`
 	Password  string    `json:"-"  validate:"required"`
 	FirstName string    `json:"first_name" validate:"required"`
