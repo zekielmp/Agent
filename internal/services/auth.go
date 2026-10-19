@@ -12,7 +12,7 @@ import (
 
 var db *sql.DB
 
-func CreateUser(user *models.User) (string, error) {
+func CreateUser(user *models.User) (*dto.AuthResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -24,13 +24,24 @@ func CreateUser(user *models.User) (string, error) {
 
 	err := db.QueryRowContext(ctx, query, user.Email, user.Password, user.FirstName, user.LastName, user.Phone).Scan(&user.ID)
 	if err != nil {
-		return "", fmt.Errorf("failed to create user:%w", err)
+		return nil, fmt.Errorf("failed to create user:%w", err)
 	}
 
-	return user.ID, nil
+	response := dto.AuthResponse{
+		User: dto.UserResponse{
+			ID:        user.ID,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Phone:     user.Phone,
+			Role:      string(user.Role),
+		},
+	}
+
+	return &response, nil
 }
 
-func GetUser(payload dto.LoginRequest) (*models.User, error) {
+func GetUser(payload dto.LoginRequest) (*dto.UserResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -52,5 +63,13 @@ func GetUser(payload dto.LoginRequest) (*models.User, error) {
 		return nil, err
 	}
 
-	return &user, nil
+	res := dto.UserResponse{
+		ID:        user.ID,
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Phone:     user.Phone,
+		Role:      string(user.Role),
+	}
+	return &res, nil
 }
