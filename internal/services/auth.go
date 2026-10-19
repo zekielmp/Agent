@@ -18,7 +18,7 @@ func CreateUser(user *models.User) (*dto.AuthResponse, error) {
 
 	query := `insert into users
 	 (email,password,first_name, last_name,phone)
-	 values ($1, $2, $3, $4, $5, $6)
+	 values ($1, $2, $3, $4, $5)
 	 returning id
 	`
 
