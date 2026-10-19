@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/zekielmp/Agent/internal/dto"
 	"github.com/zekielmp/Agent/internal/models"
 )
 
@@ -29,4 +30,27 @@ func CreateUser(user *models.User) (string, error) {
 	return user.ID, nil
 }
 
+func GetUser(payload dto.LoginRequest) (*models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 
+	query := `
+		select id, first_name, last_name, password, email, created_at, updated_at 
+		from users where email = $1;`
+
+	var user models.User
+	rows := db.QueryRowContext(ctx, query, payload.Email)
+	if err := rows.Scan(
+		&user.ID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Password,
+		&user.Email,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
