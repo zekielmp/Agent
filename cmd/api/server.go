@@ -8,10 +8,11 @@ import (
 
 	"github.com/zekielmp/Agent/internal/database"
 	"github.com/zekielmp/Agent/internal/handlers"
+	"github.com/zekielmp/Agent/internal/services"
 )
 
 type Application struct {
-	handler handlers.Handlers
+	handlers *handlers.Handlers
 }
 
 func Server(app *Application) error {
@@ -24,6 +25,8 @@ func Server(app *Application) error {
 	}
 
 	defer db.Close()
+	app.handlers = handlers.NewHandlers()
+	services.InitDB(db)
 
 	port := os.Getenv("PORT")
 	srv := http.Server{

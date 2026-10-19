@@ -7,21 +7,34 @@ import (
 	resp "github.com/zekielmp/Agent/internal/helpers"
 	"github.com/zekielmp/Agent/internal/models"
 	"github.com/zekielmp/Agent/internal/services"
+	"github.com/zekielmp/Agent/internal/utils"
 )
 
-type Handlers struct{}
+type Handlers struct {
+}
+
+func NewHandlers() *Handlers {
+	return &Handlers{}
+}
 
 func (h *Handlers) SignUp(w http.ResponseWriter, r *http.Request) {
-	var dto dto.RegisterRequest
+	var req = &dto.RegisterRequest{}
 
-	if err := resp.ReadJSON(w, r, dto); err != nil {
-		_ = resp.WriteJSON(w, http.StatusBadRequest, err)
+	if err := resp.ReadJSON(w, r, req); err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusBadRequest)
+		return
 	}
 
 	var user models.User
+	/*Hash password*/
+	hashedPassword, _ := utils.Hash(req.Password)
+	user.Password = hashedPassword
+
+	/*Create user*/
 	res, err := services.CreateUser(&user)
 	if err != nil {
-		_ = resp.WriteJSON(w, http.StatusInternalServerError, "Failed to sign-up")
+		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	_ = resp.WriteJSON(w, http.StatusCreated, map[string]any{
