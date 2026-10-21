@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/zekielmp/Agent/internal/dto"
 	"github.com/zekielmp/Agent/internal/models"
 )
 
@@ -43,7 +44,7 @@ func CreateUser(user *models.User) error {
 	return nil
 }
 
-func GetUser(payload *models.User) error {
+func GetUser(payload dto.LoginRequest) (*models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -62,7 +63,8 @@ func GetUser(payload *models.User) error {
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+
+	return &user, nil
 }
