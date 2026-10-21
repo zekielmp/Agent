@@ -49,7 +49,7 @@ func GetUser(payload dto.LoginRequest) (*models.User, error) {
 	defer cancel()
 
 	query := `
-		select id, first_name, last_name, password, email, created_at, updated_at 
+		select id, first_name, last_name, password, phone, email, created_at, updated_at 
 		from users where email = $1;`
 
 	var user models.User
@@ -60,6 +60,7 @@ func GetUser(payload dto.LoginRequest) (*models.User, error) {
 		&user.LastName,
 		&user.Password,
 		&user.Email,
+		&user.Phone,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	); err != nil {

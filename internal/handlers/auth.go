@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/zekielmp/Agent/internal/dto"
@@ -75,13 +74,12 @@ func (h *Handlers) SignIn(w http.ResponseWriter, r *http.Request) {
 		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-	log.Printf("data %s", data.Password)
+
 	/*Compare password*/
 	if err = utils.Compare(data.Password, req.Password); err != nil {
 		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-	log.Printf("d: %s", req.Password)
 	res := dto.AuthResponse{
 		User: dto.UserResponse{
 			ID:        data.ID,
