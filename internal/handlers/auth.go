@@ -33,6 +33,7 @@ func (h *Handlers) SignUp(w http.ResponseWriter, r *http.Request) {
 		Password:  hashedPassword,
 		LastName:  req.LastName,
 		Phone:     req.Phone,
+		IsActive:  true,
 	}
 	/*Create user*/
 	err := services.CreateUser(&user)
@@ -47,13 +48,55 @@ func (h *Handlers) SignUp(w http.ResponseWriter, r *http.Request) {
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 			Phone:     user.Phone,
-			Role:      string(user.Role),
+			Role:      string(models.UserRoleRenter),
 			IsActive:  true,
 		},
 	}
 
 	_ = resp.WriteJSON(w, http.StatusCreated, map[string]any{
 		"status": "Success",
+		"data":   res,
+	})
+
+}
+
+func (h *Handlers) SignIn(w http.ResponseWriter, r *http.Request) {
+	var req = &dto.LoginRequest{}
+
+	if err := resp.ReadJSON(w, r, req); err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err := services.GetUser(*req)
+	if err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	var user models.User
+
+	/*Compare password*/
+	if err = utils.Compare(user.Password, req.Password); err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	res := dto.AuthResponse{
+		User: dto.UserResponse{
+			ID:        user.ID,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Phone:     user.Phone,
+			Role:      string(models.UserRoleRenter),
+			IsActive:  true,
+		},
+	}
+
+	_ = resp.WriteJSON(w, http.StatusCreated, map[string]any{
+		"status": "Success",
+		"message":"User signed in successfully",
 		"data":   res,
 	})
 
