@@ -68,13 +68,12 @@ func (h *Handlers) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := services.GetUser(*req)
+	var user models.User
+	err := services.GetUser(&user)
 	if err != nil {
 		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-
-	var user models.User
 
 	/*Compare password*/
 	if err = utils.Compare(user.Password, req.Password); err != nil {
@@ -95,9 +94,9 @@ func (h *Handlers) SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_ = resp.WriteJSON(w, http.StatusCreated, map[string]any{
-		"status": "Success",
-		"message":"User signed in successfully",
-		"data":   res,
+		"status":  "Success",
+		"message": "User signed in successfully",
+		"data":    res,
 	})
 
 }
