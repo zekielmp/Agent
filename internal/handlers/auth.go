@@ -25,16 +25,31 @@ func (h *Handlers) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user models.User
 	/*Hash password*/
 	hashedPassword, _ := utils.Hash(req.Password)
-	user.Password = hashedPassword
-
+	user := models.User{
+		Email:     req.Email,
+		FirstName: req.FirstName,
+		Password:  hashedPassword,
+		LastName:  req.LastName,
+		Phone:     req.Phone,
+	}
 	/*Create user*/
-	res, err := services.CreateUser(&user)
+	err := services.CreateUser(&user)
 	if err != nil {
 		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
+	}
+	res := dto.AuthResponse{
+		User: dto.UserResponse{
+			ID:        user.ID,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Phone:     user.Phone,
+			Role:      string(user.Role),
+			IsActive:  true,
+		},
 	}
 
 	_ = resp.WriteJSON(w, http.StatusCreated, map[string]any{

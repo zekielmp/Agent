@@ -21,11 +21,12 @@ import (
 // }
 
 var db *sql.DB
+
 func InitDB(database *sql.DB) {
 	db = database
 }
 
-func CreateUser(user *models.User) (*dto.AuthResponse, error) {
+func CreateUser(user *models.User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -37,21 +38,10 @@ func CreateUser(user *models.User) (*dto.AuthResponse, error) {
 
 	err := db.QueryRowContext(ctx, query, user.Email, user.Password, user.FirstName, user.LastName, user.Phone).Scan(&user.ID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create user:%w", err)
+		return fmt.Errorf("failed to create user:%w", err)
 	}
 
-	response := dto.AuthResponse{
-		User: dto.UserResponse{
-			ID:        user.ID,
-			Email:     user.Email,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Phone:     user.Phone,
-			Role:      string(user.Role),
-		},
-	}
-
-	return &response, nil
+	return nil
 }
 
 func GetUser(payload dto.LoginRequest) (*dto.UserResponse, error) {
