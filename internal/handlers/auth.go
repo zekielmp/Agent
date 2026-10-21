@@ -68,26 +68,25 @@ func (h *Handlers) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user models.User
-	err := services.GetUser(&user)
+	// var user models.User
+	data, err := services.GetUser(*req)
 	if err != nil {
 		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
 	/*Compare password*/
-	if err = utils.Compare(user.Password, req.Password); err != nil {
+	if err = utils.Compare(data.Password, req.Password); err != nil {
 		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-
 	res := dto.AuthResponse{
 		User: dto.UserResponse{
-			ID:        user.ID,
-			Email:     user.Email,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Phone:     user.Phone,
+			ID:        data.ID,
+			Email:     data.Email,
+			FirstName: data.FirstName,
+			LastName:  data.LastName,
+			Phone:     data.Phone,
 			Role:      string(models.UserRoleRenter),
 			IsActive:  true,
 		},
