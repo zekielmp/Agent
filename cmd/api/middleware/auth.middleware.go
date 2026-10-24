@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	resp "github.com/zekielmp/Agent/internal/helpers"
@@ -31,9 +32,9 @@ func auth(next http.Handler) http.Handler {
 
 		accessToken := bearer[1]
 
-		payload, err := utils.verifyToken(accessToken)
+		payload, err := utils.VerifyToken(accessToken, os.Getenv("JWT_SECRET"))
 		if err != nil {
-			_ = resp.ErrorJSON(w, fmt.Errorf("%w", &err), http.StatusUnauthorized)
+			_ = resp.ErrorJSON(w, fmt.Errorf("%w", err), http.StatusUnauthorized)
 			return
 		}
 		ctx := context.WithValue(context.Background(), utils.AuthPayloadUserID, payload.UserID)
