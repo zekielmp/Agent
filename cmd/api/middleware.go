@@ -1,4 +1,4 @@
-package middleware
+package main
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/zekielmp/Agent/internal/utils"
 )
 
-func auth(next http.Handler) http.Handler {
+func Authorize(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authtoken := r.Header.Get("Authorization")
 		if len(authtoken) == 0 {
@@ -37,7 +37,7 @@ func auth(next http.Handler) http.Handler {
 			_ = resp.ErrorJSON(w, fmt.Errorf("%w", err), http.StatusUnauthorized)
 			return
 		}
-		ctx := context.WithValue(context.Background(), utils.AuthPayloadUserID, payload.UserID)
+		ctx := context.WithValue(context.Background(), "userId", payload.UserID)
 		next.ServeHTTP(w, r.Clone(ctx))
 
 	})
