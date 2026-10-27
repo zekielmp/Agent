@@ -30,8 +30,8 @@ type Property struct {
 type Amenities struct {
 	Water          bool `json:"water"`
 	Parking        bool `json:"parking"`
-	Furnished      bool `json:"Furnished"`
-	Fenced         bool `json:"Fence"`
+	Furnished      bool `json:"furnished"`
+	Fenced         bool `json:"fence"`
 	Prepaid        bool `json:"prepaid"`
 	PrivateKitchen bool `json:"private_kitchen"`
 }

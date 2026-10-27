@@ -37,7 +37,7 @@ func Authorize(next http.Handler) http.Handler {
 			_ = resp.ErrorJSON(w, fmt.Errorf("%w", err), http.StatusUnauthorized)
 			return
 		}
-		ctx := context.WithValue(context.Background(), "userId", payload.UserID)
+		ctx := context.WithValue(context.Background(), struct{ id, role string }{"user_id", "user_role"}, struct{ id, role any }{payload.UserID, payload.Role})
 		next.ServeHTTP(w, r.Clone(ctx))
 
 	})

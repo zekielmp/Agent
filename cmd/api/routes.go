@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
+type HandlerFunc func(w http.ResponseWriter, r *http.Request)
+
+func (h HandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h(w, r)
+}
+
 func (app *Application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
 
