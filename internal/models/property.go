@@ -1,4 +1,4 @@
-package dto
+package models
 
 type Availability string
 
@@ -16,6 +16,7 @@ const (
 )
 
 type Property struct {
+	ID           uint         `json:"id"`
 	Type         string       `json:"type" binding:"required"`
 	Location     string       `json:"location" binding:"required"`
 	Price        string       `json:"price" binding:"required"`
