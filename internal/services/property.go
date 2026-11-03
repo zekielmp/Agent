@@ -68,3 +68,27 @@ func AddPropertyAmenity(propID uint, a models.Amenities) error {
 
 }
 
+
+
+func generatePropertyResponse(p models.Property) *models.Property {
+	image := make([]dto.ImageResponse, len(p.Images))
+
+	for i := range p.Images {
+		image[i] = dto.ImageResponse{
+			ID:        p.Images[i].ID,
+			URL:       p.Images[i].URL,
+			AltText:   p.Images[i].AltText,
+			IsPrimary: p.Images[i].IsPrimary,
+		}
+	}
+
+	return &models.Property{
+		ID: p.ID,
+		Type: p.Type,
+		Location: p.Location,
+		Price: p.Price,
+		RentagePlan: p.RentagePlan,
+		Description: p.Description,
+		Images: image,
+	}
+}
