@@ -67,10 +67,31 @@ func AddPropertyAmenity(propID uint, a models.Amenities) error {
 	return nil
 
 }
+func GetProperty(propID uint) (*models.Property, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 
+	defer cancel()
 
+	query := `SELECT * FROM properties WHERE id = $1`
 
-func generatePropertyResponse(p models.Property) *models.Property {
+	rows := db.QueryRowContext(ctx, query, propID)
+	var p models.Property
+	if err := rows.Scan(&p.ID, &p.Type, &p.Location, &p.Price, &p.RentagePlan, &p.Description, &p.Images, &p.Reviews, &p.Availability, &p.Amenity); err != nil {
+		return nil, err
+	}
+	response := models.Property{
+		ID:          p.ID,
+		Type:        p.Type,
+		Location:    p.Location,
+		Price:       p.Price,
+		RentagePlan: p.RentagePlan,
+		Description: p.Description,
+		// Image: ,
+	}
+
+}
+
+func generatePropertyResponse(p models.Property) *dto.Property {
 	image := make([]dto.ImageResponse, len(p.Images))
 
 	for i := range p.Images {
@@ -82,13 +103,16 @@ func generatePropertyResponse(p models.Property) *models.Property {
 		}
 	}
 
-	return &models.Property{
-		ID: p.ID,
-		Type: p.Type,
-		Location: p.Location,
-		Price: p.Price,
-		RentagePlan: p.RentagePlan,
-		Description: p.Description,
-		Images: image,
+	return &dto.Property{
+		ID:           p.ID,
+		Type:         p.Type,
+		Location:     p.Location,
+		Price:        p.Price,
+		RentagePlan:  dto.Rentage(p.RentagePlan),
+		Description:  p.Description,
+		Images:       image,
+		Reviews:      p.Reviews,
+		Availability: dto.Availability(p.Availability),
+		Amenity:      dto.Amenities(p.Amenity),
 	}
 }
