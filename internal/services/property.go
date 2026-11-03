@@ -14,8 +14,8 @@ func AddProperty(p models.Property) error {
 	defer cancel()
 
 	query := `insert into properties
-	 (type,location, price, rentage, description, availability, amenity)
-	 values ($1, $2, $3, $4, $5, $6, $7)
+	 (type,location, price, rentage, description, availability)
+	 values ($1, $2, $3, $4, $5, $6)
 	 returning id
 	`
 
@@ -26,4 +26,24 @@ func AddProperty(p models.Property) error {
 
 	return nil
 
+}
+
+func UpdateProperty(propID uint, p models.Property) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `UPDATE properties SET 
+	type = COALESCE($1, type),
+	location = COALESCE($2, location),
+	price = COALESCE($3, price),
+	rentage = COALESCE($4, rentage),
+	description = COALESCE($5, description),
+	availability = COALESCE($6, availability)
+	`
+
+	_, err := db.ExecContext(ctx, query, p.Type, p.Location, p.Price, p.RentagePlan, p.Description, p.Availability)
+	if err != nil {
+		return fmt.Errorf("failed to update property:%w", err)
+	}
+	return nil
 }
