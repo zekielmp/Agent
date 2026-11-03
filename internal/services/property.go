@@ -47,3 +47,22 @@ func UpdateProperty(propID uint, p models.Property) error {
 	}
 	return nil
 }
+
+func AddPropertyAmenity(propID uint, a models.Amenities) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `insert into amenities
+	 (property_id, water, parking, furnished, fenced, prepaid, private_kitchen)
+	 values ($1, $2, $3, $4, $5, $6, $7)
+	 returning id
+	`
+
+	err := db.QueryRowContext(ctx, query, propID, a.Water, a.Parking, a.Furnished, a.Fenced, a.Prepaid, a.PrivateKitchen).Scan(a)
+	if err != nil {
+		return fmt.Errorf("failed to Add property amenity:%w", err)
+	}
+
+	return nil
+
+}

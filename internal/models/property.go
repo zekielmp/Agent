@@ -29,10 +29,10 @@ type Property struct {
 }
 
 type Amenities struct {
-	Water          bool `json:"water"`
-	Parking        bool `json:"parking"`
-	Furnished      bool `json:"furnished"`
-	Fenced         bool `json:"fence"`
-	Prepaid        bool `json:"prepaid"`
-	PrivateKitchen bool `json:"private_kitchen"`
+	Water          bool `json:"water" default:"false"`
+	Parking        bool `json:"parking" default:"false"`
+	Furnished      bool `json:"furnished" default:"false"`
+	Fenced         bool `json:"fence" default:"false"`
+	Prepaid        bool `json:"prepaid" default:"false"`
+	PrivateKitchen bool `json:"private_kitchen" default:"false"`
 }
