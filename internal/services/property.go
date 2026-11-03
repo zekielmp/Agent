@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/zekielmp/Agent/internal/dto"
 	"github.com/zekielmp/Agent/internal/models"
 )
 
@@ -66,3 +67,4 @@ func AddPropertyAmenity(propID uint, a models.Amenities) error {
 	return nil
 
 }
+
