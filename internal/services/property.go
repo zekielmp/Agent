@@ -67,7 +67,7 @@ func AddPropertyAmenity(propID uint, a models.Amenities) error {
 	return nil
 
 }
-func GetProperty(propID uint) (*models.Property, error) {
+func GetProperty(propID uint) (*dto.Property, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 
 	defer cancel()
@@ -79,15 +79,48 @@ func GetProperty(propID uint) (*models.Property, error) {
 	if err := rows.Scan(&p.ID, &p.Type, &p.Location, &p.Price, &p.RentagePlan, &p.Description, &p.Images, &p.Reviews, &p.Availability, &p.Amenity); err != nil {
 		return nil, err
 	}
-	response := models.Property{
-		ID:          p.ID,
-		Type:        p.Type,
-		Location:    p.Location,
-		Price:       p.Price,
-		RentagePlan: p.RentagePlan,
-		Description: p.Description,
-		// Image: ,
+	response := generatePropertyResponse(p)
+
+	return response, nil
+}
+
+func GetUsers() ([]*models.Property, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `SELECT * FROM properties;`
+
+	rows, err := db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
 	}
+
+	defer rows.Close()
+
+	var props []*models.Property
+	for rows.Next() {
+		var prop models.Property
+		if err := rows.Scan(
+			&prop.ID,
+			&prop.Type,
+			&prop.Location,
+			&prop.Price,
+			&prop.RentagePlan,
+			&prop.Description,
+			&prop.Images,
+			&prop.Reviews,
+			&prop.Availability,
+			&prop.Amenity,
+		); err != nil {
+			return nil, err
+		}
+		props = append(props, &prop)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return props, nil
 
 }
 
