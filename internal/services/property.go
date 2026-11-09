@@ -53,9 +53,9 @@ func AddPropertyAmenity(propID uint, a models.Amenities) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := `insert into amenities
+	query := `insert into properties
 	 (property_id, water, parking, furnished, fenced, prepaid, private_kitchen)
-	 values ($1, $2, $3, $4, $5, $6, $7)
+	 values ($1, $2, $3, $4, $5, $6, $7) 
 	 returning id
 	`
 

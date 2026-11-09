@@ -70,3 +70,34 @@ func (h *Handlers) UpdateProperty(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (h *Handlers) AddPropertyAmenity(w http.ResponseWriter, r *http.Request) {
+	req := &dto.Amenities{}
+	if err := resp.ReadJSON(w, r, req); err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.ParseUint(r.PathValue("id"), 10, 32)
+	if err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	amenity := models.Amenities{
+		Water:          req.Water,
+		Parking:        req.Parking,
+		Furnished:      req.Furnished,
+		Fenced:         req.Fenced,
+		Prepaid:        req.Prepaid,
+		PrivateKitchen: req.PrivateKitchen,
+	}
+
+	if err = services.AddPropertyAmenity(uint(id), amenity); err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	_ = resp.WriteJSON(w, http.StatusOK, map[string]any{
+		"status": "Success",
+	})
+}
