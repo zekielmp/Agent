@@ -84,7 +84,7 @@ func GetProperty(propID uint) (*dto.Property, error) {
 	return response, nil
 }
 
-func GetUsers() ([]*models.Property, error) {
+func GetProperties() ([]*models.Property, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 

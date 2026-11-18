@@ -101,3 +101,24 @@ func (h *Handlers) AddPropertyAmenity(w http.ResponseWriter, r *http.Request) {
 		"status": "Success",
 	})
 }
+
+func (h *Handlers) GetProperty(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseUint(r.PathValue("id"), 10, 32)
+	if err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	property, err := services.GetProperty(uint(id))
+	if err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	_ = resp.WriteJSON(w, http.StatusOK, map[string]any{
+		"status":  "Success",
+		"message": "Property retrieved successfully",
+		"data":    property,
+	})
+}
+
