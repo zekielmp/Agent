@@ -122,3 +122,16 @@ func (h *Handlers) GetProperty(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *Handlers) GetProperties(w http.ResponseWriter, r *http.Request) {
+	properties, err := services.GetProperties()
+	if err != nil {
+		_ = resp.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	_ = resp.WriteJSON(w, http.StatusOK, map[string]any{
+		"status":  "Success",
+		"message": "Properties retrieved successfully",
+		"data":    properties,
+	})
+}
